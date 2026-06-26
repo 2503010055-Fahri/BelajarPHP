@@ -8,6 +8,7 @@
 <body>
     
     <form action="post2.php" method="post">
+        Masukan Nama : 
         <input type="text" name="nama">
         <br>
         <button type="submit" name="simpan">Simpan</button>
