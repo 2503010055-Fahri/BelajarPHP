@@ -7,8 +7,21 @@ if (!isset($_SESSION["login"])) {
 }
 
 require 'function.php';
-// tampilkan seluruh data mahasiswa dimna dari data yang terbaru ke terlama
-$mahasiswa = query("SELECT * FROM mahasiswa");
+
+
+// pagination
+// konfigurasi
+$jmlDataPerhalaman = 2;
+$jmlData = count(query("SELECT * FROM mahasiswa"));
+$jmlHalaman = ceil($jmlData / $jmlDataPerhalaman);
+// halaman aktif
+// operator ternary
+$halAktif = ( isset($_GET["hal"]) ) ? $_GET["hal"] : 1;
+$awalData = ( $jmlDataPerhalaman * $halAktif ) - $jmlDataPerhalaman;
+
+
+$mahasiswa = query("SELECT * FROM mahasiswa LIMIT $awalData, $jmlDataPerhalaman");
+
 
 // tombol cari ditekan
 if (isset($_POST["cari"])) {
@@ -44,6 +57,23 @@ if (isset($_POST["cari"])) {
             autocomplete="off">
         <button type="submit" name="cari">Cari</button>
     </form>
+
+    <!-- Navigasi -->
+    <?php if( $halAktif > 1 ) : ?>
+        <a href="?hal=<?= $halAktif - 1 ?>">&lt;</a>
+    <?php endif; ?>
+
+    <?php for( $i = 1; $i <= $jmlHalaman; $i++ ) : ?>
+        <?php if( $i == $halAktif ) : ?>
+            <a href="?hal=<?= $i ?>" style="font-weight: bold; color: blue;"><?= $i ?></a>
+        <?php else : ?>
+            <a href="?hal=<?= $i ?>"><?= $i ?></a>
+        <?php endif; ?>
+    <?php endfor; ?>
+
+    <?php if( $halAktif < $jmlHalaman ) : ?>
+        <a href="?hal=<?= $halAktif + 1 ?>">&gt;</a>
+    <?php endif; ?>
 
     <br>
 
